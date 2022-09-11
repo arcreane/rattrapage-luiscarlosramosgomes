@@ -12,6 +12,9 @@ Mat imgOriginal, imgGray, imgBlur, imgCanny, imgThre, imgDil, imgErode, imgWarp,
 vector<Point> initialPoints, docPoints;
 float w = 420, h = 596;
 
+
+//Process image
+
 Mat preProcessing(Mat img)
 {
 	cvtColor(img, imgGray, COLOR_BGR2GRAY);
@@ -22,6 +25,8 @@ Mat preProcessing(Mat img)
 	
 	return imgDil;
 }
+
+//Get the countours of the document
 
 vector<Point> getContours(Mat image) {
 
@@ -59,6 +64,8 @@ vector<Point> getContours(Mat image) {
 	}
 	return biggest;
 }
+
+//Draw 4 points of documents
 
 void drawPoints(vector<Point> points, Scalar color)
 {
@@ -132,17 +139,17 @@ void main() {
 		k = waitKey(20) & 0xFF;
 		
 		
-		if (k == 115) {//if 's' is pressed, save image on disk
+		if (k == 115) {												//if 's' is pressed, save image on disk
 			imwrite("output.jpg", imgCrop);
 			cout << "Saved the output image on disk!" << endl;
 		}
-		else if (k == 27) {//if ESC is pressed
+		else if (k == 27) {											//if ESC is pressed close all windows
 	
 			destroyAllWindows();
 		
 }
 	}
-//DE FOR WEBCAM
+//CODE FOR WEBCAM
 
 
 	//void main() {
