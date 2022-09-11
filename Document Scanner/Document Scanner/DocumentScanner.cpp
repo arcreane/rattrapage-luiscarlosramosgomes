@@ -8,7 +8,7 @@ using namespace std;
 
 // Document Scanner  //
 
-Mat imgOriginal, imgGray, imgBlur, imgCanny, imgThre, imgDil, imgErode, imgWarp, imgCrop;
+Mat imgOriginal, imgGray, imgBlur, imgCanny, imgThre, imgDil, imgErode, imgWarp, imgCrop, imgSharp;
 vector<Point> initialPoints, docPoints;
 float w = 420, h = 596;
 
@@ -95,6 +95,8 @@ vector<Point> reorder(vector<Point> points)
 	return newPoints;
 }
 
+// Warp the perspective of the document
+
 Mat getWarp(Mat img, vector<Point> points, float w, float h)
 {
 	Point2f src[4] = { points[0],points[1],points[2],points[3] };
@@ -130,8 +132,26 @@ void main() {
 	Rect roi(cropVal, cropVal, w - (2 * cropVal), h - (2 * cropVal));
 	imgCrop = imgWarp(roi);
 
+	//Sharpen (2 methods)
+
+	//Using Kernel
+	/*Mat sharpening_kernel = (Mat_<double>(3, 3) << -1, -1, -1,
+		-1, 9, -1,
+		-1, -1, -1);
+	filter2D(imgCrop, imgSharp, -1, sharpening_kernel);*/
+
+	//Subtract smoothed image from original
+	double sigma = 1, amount = 1;
+	Mat blurry, sharp;
+	GaussianBlur(imgCrop, blurry, Size(), sigma);
+	addWeighted(imgCrop, 1 + amount, blurry, -amount, 0, sharp);
+
+
+
+
 	imshow("Image", imgOriginal);
-	imshow("Image Crop", imgCrop);
+	imshow("Image Sharp", sharp);
+
 
 	int k;
 	while (true)
@@ -140,7 +160,7 @@ void main() {
 		
 		
 		if (k == 115) {												//if 's' is pressed, save image on disk
-			imwrite("output.jpg", imgCrop);
+			imwrite("output.jpg", sharp);
 			cout << "Saved the output image on disk!" << endl;
 		}
 		else if (k == 27) {											//if ESC is pressed close all windows
