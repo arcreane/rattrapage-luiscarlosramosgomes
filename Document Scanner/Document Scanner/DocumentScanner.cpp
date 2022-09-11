@@ -76,6 +76,8 @@ void drawPoints(vector<Point> points, Scalar color)
 	}
 }
 
+//Reorder 4 points
+
 vector<Point> reorder(vector<Point> points)
 {
 	vector<Point> newPoints;
